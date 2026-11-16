@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cornellà E · Alineaciones</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f3f4f6;--card:#fff;--tx:#1b1f3b;--mut:#6b7280;--ac:#1d3a8a;--bd:#d9dce3}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14161d;--card:#1f222c;--tx:#eceef5;--mut:#9aa0b2;--ac:#7c9cff;--bd:#343848}}
+:root[data-theme="dark"]{--bg:#14161d;--card:#1f222c;--tx:#eceef5;--mut:#9aa0b2;--ac:#7c9cff;--bd:#343848}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:720px;margin:0 auto;padding:16px}
+h1{font-size:1.25rem;margin:4px 0 2px}
+.sub{color:var(--mut);font-size:.85rem;margin-bottom:12px}
+h2{font-size:.9rem;margin:0 0 10px;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:14px}
+select,textarea,input[type=text]{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:7px;width:100%}
+button{font:inherit;cursor:pointer}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.row>.g{flex:1;min-width:140px}
+.btn{padding:7px 12px;border-radius:8px;border:1px solid var(--ac);background:var(--ac);color:#fff}
+.btn.o{background:none;color:var(--ac)}
+label{font-size:.8rem;color:var(--mut);display:block;margin-bottom:4px}
+.conv{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:6px}
+.conv label{display:flex;gap:8px;align-items:center;color:var(--tx);font-size:.88rem;margin:0;padding:7px 9px;border:1px solid var(--bd);border-radius:8px;cursor:pointer}
+.conv input{width:18px;height:18px}
+.tabs{display:flex;gap:8px;margin-bottom:12px}
+.tab{flex:1;padding:9px;border-radius:8px;border:1px solid var(--bd);background:var(--card);color:var(--tx)}
+.tab.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.pitch{position:relative;background:repeating-linear-gradient(#2e8b3d 0 12.5%,#2a7d37 12.5% 25%);border:3px solid #fff;border-radius:6px;padding:18px 6px;display:flex;flex-direction:column;justify-content:space-around;gap:26px;min-height:520px;overflow:hidden;margin-top:12px}
+.pitch:before{content:"";position:absolute;left:0;right:0;top:50%;border-top:2px solid rgba(255,255,255,.7)}
+.pitch:after{content:"";position:absolute;left:50%;top:50%;width:90px;height:90px;margin:-45px;border:2px solid rgba(255,255,255,.7);border-radius:50%}
+.line{position:relative;z-index:1;display:flex;justify-content:space-evenly;gap:6px}
+.pl{flex:1;max-width:190px;min-width:0}
+.pl select{padding:6px 4px;font-size:.78rem;background:rgba(255,255,255,.95);color:#111;border-color:#fff}
+.pl .r{font-size:.68rem;color:#fff;text-align:center;margin-bottom:2px;font-weight:600;text-shadow:0 1px 2px #000}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th,td{padding:8px 6px;border-bottom:1px solid var(--bd);text-align:center}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--mut);font-weight:600;font-size:.78rem}
+.pl .sb{margin-top:4px}.pl .sb select{background:rgba(255,236,150,.97)}.hist details{border-top:1px solid var(--bd);padding:8px 0}.hist summary{cursor:pointer;font-weight:600;font-size:.9rem}.hist .q{font-size:.82rem;margin:8px 0 0;line-height:1.45}.hist .q span{color:var(--mut)}
+textarea{min-height:90px}
+.empty{color:var(--mut);font-size:.88rem}
+</style>
+</head>
+<body>
+<main>
+<h1>⚽ Fundació UE Cornellà E</h1>
+<div class="sub">Alineaciones por cuartos (4 × 15 min) y estadísticas de la temporada</div>
+
+<div class="card">
+<h2>Partido</h2>
+<div class="row">
+<div class="g"><label for="match">Partido seleccionado</label><select id="match"></select></div>
+<button class="btn o" id="del">Borrar</button>
+</div>
+<div class="row" style="margin-top:10px">
+<div class="g"><label for="newname">Nuevo partido (nombre o rival)</label><input type="text" id="newname" placeholder="Ej.: Jornada 2 · vs Horta"></div>
+<button class="btn" id="add">Añadir</button>
+</div>
+</div>
+
+<div class="card">
+<h2>Jugadores convocados</h2>
+<div class="conv" id="conv"></div>
+</div>
+
+<div class="card">
+<h2>Formación por cuarto</h2>
+<div class="tabs" id="tabs"></div>
+<label for="form">Formación del cuarto</label>
+<select id="form">
+<option>1-3-1-1-1</option><option>1-3-2-1</option><option>1-3-1-2</option>
+</select>
+<div class="pitch" id="pitch"></div>
+</div>
+
+<div class="card">
+<h2>Estadísticas por jugador</h2>
+<div class="tw"><table id="stats"></table></div>
+</div>
+
+<div class="card hist">
+<h2>Alineaciones históricas</h2>
+<div id="hist"></div>
+</div>
+
+<div class="card">
+<h2>Plantilla (uno por línea)</h2>
+<textarea id="roster"></textarea>
+</div>
+</main>
+<script>
+const ROSTER=["Roc Campos Ruiz","Joel de Manuel Algaba","Lucas Daniel Falconi Martinez","Pol Fernandez Almena","Carlos Manuel","Pau Laguia Lopez","Nil Laza Arrayas","Enzo Martinez Valderrama","Didier Morales Rodriguez","Mario Muñoz Rudilla","Asier Pérez Molino","Aaron Ruiz Prado"];
+const FORMS={"1-3-1-1-1":[1,3,1,1,1],"1-3-2-1":[1,3,2,1],"1-3-1-2":[1,3,1,2]};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
+const newMatch=name=>({id:Date.now()+Math.random(),name,conv:[],qs:[0,1,2,3].map(()=>({f:"1-3-1-1-1",p:Array(7).fill(""),s:Array(7).fill("")}))});
+let S={players:ROSTER.slice(),matches:[newMatch("22/11 · vs Escola de Futbol Premier Barcelona D")],cur:0,q:0};
+try{const r=localStorage.getItem("cornella-e");if(r){const o=JSON.parse(r);if(o&&o.matches&&o.matches.length)S=o;}}catch(e){}
+const save=()=>{try{localStorage.setItem("cornella-e",JSON.stringify(S));}catch(e){}};
+S.matches.forEach(m=>m.qs.forEach(q=>{if(!q.s)q.s=Array(7).fill("");}));
+const fmt=s=>Math.floor(s/60)+"'"+(s%60?String(s%60).padStart(2,"0")+'"':"");
+const fp=n=>String(n).replace(".",",");
+const M=()=>S.matches[S.cur];
+
+function renderMatch(){
+ $("match").innerHTML=S.matches.map((m,i)=>`<option value="${i}" ${i===S.cur?"selected":""}>${esc(m.name)}</option>`).join("");
+}
+function renderConv(){
+ $("conv").innerHTML=S.players.map((p,i)=>`<label><input type="checkbox" data-i="${i}" ${M().conv.includes(p)?"checked":""}>${esc(p)}</label>`).join("");
+}
+function renderPitch(){
+ const m=M(),q=m.qs[S.q];
+ $("tabs").innerHTML=[0,1,2,3].map(k=>`<button class="tab ${S.q===k?"on":""}" data-k="${k}">${k+1}º cuarto</button>`).join("");
+ $("form").value=q.f;
+ if(!m.conv.length){$("pitch").innerHTML=`<div class="empty" style="position:relative;z-index:1;color:#fff;text-align:center">Marca primero los jugadores convocados.</div>`;return;}
+ const lines=FORMS[q.f],q4=S.q===3;let html="";
+ const used=new Set((q4?q.p.concat(q.s.filter((x,i)=>q.p[i])):q.p).filter(Boolean));
+ for(let li=lines.length-1;li>=0;li--){
+  const start=lines.slice(0,li).reduce((a,b)=>a+b,0);
+  const r=li===0?"POR":li===1?"DEF":li===lines.length-1?"DEL":"MED";
+  html+=`<div class="line">`;
+  for(let j=0;j<lines[li];j++){
+   const n=start+j,cur=q.p[n],sc=q.s[n];
+   const opts=c=>m.conv.map(p=>`<option value="${esc(p)}" ${p===c?"selected":""} ${used.has(p)&&p!==c?"disabled":""}>${esc(p)}</option>`).join("");
+   html+=`<div class="pl"><div class="r">${r}</div><select data-n="${n}"><option value="">— elegir —</option>${opts(cur)}</select>`+
+   (q4&&cur?`<div class="sb"><div class="r">cambio (7'30")</div><select data-s="${n}"><option value="">— sin cambio —</option>${opts(sc)}</select></div>`:"")+`</div>`;
+  }
+  html+=`</div>`;
+ }
+ $("pitch").innerHTML=html;
+}
+function renderStats(){renderHist();
+ const rows=S.players.map(p=>{
+  let c=0,sec=0;
+  S.matches.forEach(m=>{if(m.conv.includes(p))c++;m.qs.forEach((x,k)=>x.p.forEach((st,i)=>{const w=k===3?x.s[i]:"";if(st===p)sec+=w?450:900;if(st&&w===p)sec+=450;}));});
+  return {p,c,q:sec/900,min:sec};
+ }).filter(r=>r.c>0||r.q>0).sort((a,b)=>b.min-a.min);
+ $("stats").innerHTML=`<tr><th>Jugador</th><th>Partidos convocados</th><th>Partes jugadas</th><th>Minutos jugados</th></tr>`+
+ (rows.length?rows.map(r=>`<tr><td>${esc(r.p)}</td><td>${r.c}</td><td>${fp(r.q)}</td><td><b>${fmt(r.min)}</b></td></tr>`).join(""):`<tr><td colspan="4" class="empty">Aún no hay datos.</td></tr>`);
+}
+function renderHist(){
+ $("hist").innerHTML=S.matches.map((m,i)=>[m,i]).reverse().map(([m,i])=>{
+  const qs=m.qs.map((q,k)=>{
+   if(!q.p.some(Boolean))return `<div class="q"><b>${k+1}º cuarto</b> <span>sin alineación</span></div>`;
+   const L=FORMS[q.f];
+   const rows=L.map((n,li)=>{const st=L.slice(0,li).reduce((a,b)=>a+b,0);
+    const r=li===0?"POR":li===1?"DEF":li===L.length-1?"DEL":"MED";
+    return r+": "+q.p.slice(st,st+n).map((x,j)=>(x||"—")+(k===3&&x&&q.s[st+j]?" ⇄ "+q.s[st+j]:"")).join(", ");}).join(" · ");
+   return `<div class="q"><b>${k+1}º cuarto</b> <span>${q.f}</span><br>${esc(rows)}</div>`;
+  }).join("");
+  return `<details><summary>${esc(m.name)}</summary><div class="q"><span>Convocados (${m.conv.length}):</span> ${esc(m.conv.join(", ")||"—")}</div>${qs}<button class="btn o" data-i="${i}" style="margin-top:10px">Abrir en el editor</button></details>`;
+ }).join("");
+}
+$("hist").onclick=e=>{const b=e.target.closest("button");if(!b)return;S.cur=+b.dataset.i;S.q=0;all();window.scrollTo(0,0);};
+function all(){renderMatch();renderConv();renderPitch();renderStats();save();}
+
+$("match").onchange=e=>{S.cur=+e.target.value;S.q=0;all();};
+$("add").onclick=()=>{const n=$("newname").value.trim()||("Partido "+(S.matches.length+1));
+ S.matches.push(newMatch(n));S.cur=S.matches.length-1;S.q=0;$("newname").value="";all();};
+$("del").onclick=()=>{if(S.matches.length<2){const n=M().name;S.matches=[newMatch(n)];}else{S.matches.splice(S.cur,1);S.cur=0;}S.q=0;all();};
+$("conv").onchange=e=>{const c=e.target.closest("input");if(!c)return;
+ const p=S.players[+c.dataset.i],m=M();
+ if(c.checked){if(!m.conv.includes(p))m.conv.push(p);}
+ else{m.conv=m.conv.filter(x=>x!==p);m.qs.forEach(q=>{q.p=q.p.map(x=>x===p?"":x);q.s=q.s.map(x=>x===p?"":x);});}
+ renderPitch();renderStats();save();};
+$("tabs").onclick=e=>{const b=e.target.closest(".tab");if(!b)return;S.q=+b.dataset.k;renderPitch();save();};
+$("form").onchange=e=>{const q=M().qs[S.q];q.f=e.target.value;q.p=Array(7).fill("");q.s=Array(7).fill("");renderPitch();renderStats();save();};
+$("pitch").onchange=e=>{const s=e.target.closest("select");if(!s)return;const q=M().qs[S.q];
+ if(s.dataset.s!==undefined)q.s[+s.dataset.s]=s.value;
+ else{q.p[+s.dataset.n]=s.value;if(!s.value)q.s[+s.dataset.n]="";}
+ renderPitch();renderStats();save();};
+$("roster").value=S.players.join("\n");
+$("roster").onchange=e=>{S.players=e.target.value.split("\n").map(s=>s.trim()).filter(Boolean);
+ S.matches.forEach(m=>{m.conv=m.conv.filter(p=>S.players.includes(p));m.qs.forEach(q=>{q.p=q.p.map(x=>S.players.includes(x)?x:"");q.s=q.s.map(x=>S.players.includes(x)?x:"");});});all();};
+all();
+</script>
+</body>
+</html>
